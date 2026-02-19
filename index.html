@@ -531,6 +531,43 @@
       // Analytics configuration - Replace with your Cloudflare Worker URL
       const ANALYTICS_ENDPOINT = 'https://rx5808-analytics.lochnessfpv.workers.dev';
 
+      // Generate or retrieve visitor ID
+      function getVisitorId() {
+        let visitorId = localStorage.getItem('visitor_id');
+        if (!visitorId) {
+          visitorId = 'v_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+          localStorage.setItem('visitor_id', visitorId);
+        }
+        return visitorId;
+      }
+
+      // Get referrer (cleaned)
+      function getReferrer() {
+        const ref = document.referrer;
+        if (!ref) return 'Direct';
+        try {
+          const url = new URL(ref);
+          if (url.hostname.includes('google')) return 'Google';
+          if (url.hostname.includes('facebook')) return 'Facebook';
+          if (url.hostname.includes('reddit')) return 'Reddit';
+          if (url.hostname.includes('twitter') || url.hostname.includes('x.com')) return 'Twitter';
+          if (url.hostname.includes('youtube')) return 'YouTube';
+          if (url.hostname === window.location.hostname) return 'Internal';
+          return url.hostname;
+        } catch (e) {
+          return 'Unknown';
+        }
+      }
+
+      // Track time on page
+      let pageLoadTime = Date.now();
+      window.addEventListener('beforeunload', () => {
+        const timeOnPage = Math.round((Date.now() - pageLoadTime) / 1000); // seconds
+        if (timeOnPage > 3 && timeOnPage < 3600) { // between 3s and 1h
+          trackEvent('time_on_page', { timeOnPage, visitor_id: getVisitorId() });
+        }
+      });
+
       // Analytics tracking
       async function trackEvent(eventType, eventData = {}) {
         if (ANALYTICS_ENDPOINT === 'YOUR_WORKER_URL_HERE') {
@@ -543,6 +580,8 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               event: eventType,
+              visitor_id: getVisitorId(),
+              referrer: getReferrer(),
               ...eventData,
             }),
           });
