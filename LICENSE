@@ -1,48 +1,78 @@
-RX5808-Div Configurator - Non-Commercial License
+RX5808-Div Configurator - Proprietary License
 
-Copyright (c) 2026 LochnessFPV
+Copyright (c) 2026 LochnessFPV. All Rights Reserved.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to use,
-copy, modify, merge, and distribute the Software for NON-COMMERCIAL purposes
-only, subject to the following conditions:
+TERMS AND CONDITIONS:
 
-1. NON-COMMERCIAL USE ONLY
-   The Software may NOT be used for commercial purposes. Commercial purposes
-   include, but are not limited to:
-   - Selling the Software or any derivative works
-   - Using the Software as part of a commercial product or service
-   - Using the Software to generate revenue, either directly or indirectly
-   - Including the Software in products or services offered for a fee
+1. PERMITTED USE
+   You are granted a limited, non-exclusive, non-transferable, revocable license
+   to use this software solely for personal, non-commercial purposes as provided
+   by the official hosted service at https://lochnessfpv.github.io/RX5808-Div-Configurator/
 
-2. ATTRIBUTION
-   The above copyright notice and this permission notice shall be included in
-   all copies or substantial portions of the Software.
+2. PROHIBITED ACTIONS
+   You may NOT:
+   - Modify, alter, adapt, or create derivative works of the Software
+   - Reverse engineer, decompile, or disassemble the Software
+   - Remove or alter any copyright, trademark, or proprietary notices
+   - Rebrand, rename, or claim the Software as your own work
+   - Host, deploy, or distribute modified or unmodified copies of the Software
+   - Create competing services or alternate versions based on this Software
+   - Use the Software for any commercial purposes whatsoever
+   - Sell, rent, lease, license, or distribute the Software
+   - Use the Software to generate revenue, directly or indirectly
+   - Incorporate the Software into commercial products or services
 
-3. DERIVATIVE WORKS
-   Modifications and derivative works are permitted for non-commercial use only,
-   and must be distributed under the same license terms (non-commercial).
+3. SOURCE CODE AVAILABILITY
+   The source code is made available for transparency, security review, and
+   educational purposes only. Availability of source code does NOT grant
+   permission to use, modify, or redistribute the code.
 
-4. FIRMWARE FILES
+4. NO REDISTRIBUTION
+   You may NOT copy, distribute, publish, or otherwise transfer copies of
+   the Software to any third party, whether modified or unmodified.
+
+4. NO REDISTRIBUTION
+   You may NOT copy, distribute, publish, or otherwise transfer copies of
+   the Software to any third party, whether modified or unmodified.
+
+5. OFFICIAL SERVICE ONLY
+   This Software is intended to be used ONLY through the official hosted
+   service. Self-hosting, alternate hosting, or operating your own instance
+   is strictly prohibited without explicit written permission.
+
+6. FIRMWARE FILES
    Firmware binaries included in this repository are distributed under their
-   respective licenses. This license applies only to the web configurator
-   interface code and assets.
+   respective licenses (GPL-3.0). This license applies only to the web
+   configurator interface code, design, and assets.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+7. TERMINATION
+   This license is effective until terminated. Your rights under this license
+   will terminate automatically without notice if you fail to comply with any
+   of its terms. Upon termination, you must cease all use of the Software
+   and destroy all copies in your possession.
 
-For commercial licensing inquiries, please contact: LochnessFPV via GitHub
+8. DISCLAIMER OF WARRANTY
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+   AUTHOR OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+   THE SOFTWARE.
+
+9. COMMERCIAL LICENSING
+   For commercial use, modifications, rebranding, or hosting inquiries,
+   contact: LochnessFPV via GitHub Issues
+
+VIOLATIONS of this license will result in immediate termination of your rights
+and may subject you to legal action.
 
 ---
 
 THIRD-PARTY COMPONENTS:
 
-This software uses the following open-source components:
+This software incorporates the following open-source components, which are
+subject to their own respective licenses:
 
 - ESP Web Tools (https://github.com/esphome/esp-web-tools)
   Licensed under MIT License
@@ -51,3 +81,6 @@ This software uses the following open-source components:
 - RX5808-Div Firmware (https://github.com/LochnessFPV/RX5808-Div)
   Licensed under GPL-3.0
   Based on work by Ft-Available and contributors
+
+The above third-party components are NOT covered by this proprietary license
+and remain under their original open-source licenses.
