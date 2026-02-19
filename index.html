@@ -8,67 +8,132 @@
     <meta name="color-scheme" content="dark light" />
     
     <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      
       body {
-        font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, sans-serif;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         padding: 0;
         margin: 0;
-        line-height: 1.6;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        line-height: 1.7;
+        background: #f8f9fa;
         min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+      }
+      
+      .header {
+        background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+        color: white;
+        padding: 60px 20px;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      }
+      
+      .header h1 {
+        font-size: 36px;
+        font-weight: 600;
+        margin-bottom: 12px;
+        letter-spacing: -0.5px;
+      }
+      
+      .header p {
+        font-size: 18px;
+        opacity: 0.95;
+        max-width: 700px;
+        margin: 0 auto;
+        font-weight: 400;
       }
       
       .container {
+        max-width: 900px;
+        margin: -40px auto 60px;
+        padding: 0 20px;
+      }
+      
+      .card {
         background: white;
-        border-radius: 12px;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        padding: 40px;
-        max-width: 600px;
-        margin: 20px;
-      }
-      
-      h1 {
-        color: #333;
-        margin-top: 0;
-        text-align: center;
-      }
-      
-      .logo {
-        text-align: center;
-        margin-bottom: 30px;
-      }
-      
-      .logo img {
-        max-width: 200px;
-        height: auto;
-      }
-      
-      .description {
-        color: #666;
-        margin-bottom: 30px;
-        text-align: center;
-      }
-      
-      .install-section {
-        background: #f5f5f5;
         border-radius: 8px;
-        padding: 20px;
-        margin: 20px 0;
+        padding: 32px;
+        margin-bottom: 24px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        border: 1px solid #e5e7eb;
       }
       
-      .install-section h3 {
-        margin-top: 0;
-        color: #667eea;
+      h2 {
+        font-size: 24px;
+        font-weight: 600;
+        color: #111827;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      
+      h3 {
+        font-size: 18px;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 12px;
+      }
+      
+      .version-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+      
+      .version-header h2 {
+        margin: 0;
+      }
+      
+      .version-selector {
+        padding: 10px 16px;
+        border-radius: 6px;
+        border: 1px solid #d1d5db;
+        background: #ffffff;
+        color: #111827;
+        cursor: pointer;
+        font-size: 15px;
+        font-weight: 500;
+        font-family: inherit;
+        min-width: 180px;
+        transition: all 0.2s;
+      }
+      
+      .version-selector:hover {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      }
+      
+      .version-selector:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
       }
       
       .version-info {
         display: flex;
-        justify-content: space-between;
-        margin-bottom: 15px;
+        gap: 24px;
+        margin-bottom: 24px;
+        padding: 16px;
+        background: #f9fafb;
+        border-radius: 6px;
         font-size: 14px;
-        color: #666;
+        flex-wrap: wrap;
+      }
+      
+      .version-info span {
+        color: #6b7280;
+      }
+      
+      .version-info strong {
+        color: #374151;
+        font-weight: 600;
       }
       
       esp-web-install-button {
@@ -76,89 +141,167 @@
         margin: 20px auto;
       }
       
-      .requirements {
-        background: #fff3cd;
-        border-left: 4px solid #ffc107;
-        padding: 15px;
-        margin: 20px 0;
-        border-radius: 4px;
+      .info-box {
+        background: #eff6ff;
+        border-left: 4px solid #3b82f6;
+        padding: 20px;
+        border-radius: 6px;
       }
       
-      .requirements h4 {
-        margin-top: 0;
-        color: #856404;
+      .info-box h3 {
+        color: #1e40af;
+        font-size: 16px;
+        margin-bottom: 12px;
       }
       
-      .requirements ul {
-        margin-bottom: 0;
-        padding-left: 20px;
+      .info-box ul {
+        list-style: none;
+        padding: 0;
       }
       
-      .requirements li {
-        color: #856404;
-        margin: 5px 0;
+      .info-box li {
+        color: #1e40af;
+        margin: 8px 0;
+        padding-left: 24px;
+        position: relative;
+      }
+      
+      .info-box li:before {
+        content: "•";
+        position: absolute;
+        left: 8px;
+        font-weight: bold;
       }
       
       .footer {
         text-align: center;
-        margin-top: 30px;
-        padding-top: 20px;
-        border-top: 1px solid #e0e0e0;
+        padding: 40px 20px;
         font-size: 14px;
-        color: #666;
+        color: #6b7280;
+        border-top: 1px solid #e5e7eb;
+        background: #ffffff;
       }
       
       .footer a {
-        color: #667eea;
+        color: #3b82f6;
         text-decoration: none;
+        font-weight: 500;
       }
       
       .footer a:hover {
+        color: #2563eb;
         text-decoration: underline;
+      }
+      
+      .release-notes {
+        color: #374151;
+        line-height: 1.7;
+      }
+      
+      .release-notes h3, .release-notes h4 {
+        color: #111827;
+        margin-top: 16px;
+        margin-bottom: 8px;
+      }
+      
+      .release-notes ul {
+        padding-left: 24px;
+        margin: 12px 0;
+      }
+      
+      .release-notes li {
+        margin: 6px 0;
+        color: #4b5563;
+      }
+      
+      .release-notes p {
+        margin: 12px 0;
+        color: #4b5563;
       }
       
       .features {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 15px;
-        margin: 20px 0;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 16px;
+        margin: 24px 0;
       }
       
       .feature {
-        background: #e8f4f8;
-        padding: 15px;
-        border-radius: 8px;
-        border-left: 4px solid #667eea;
+        padding: 20px;
+        border-radius: 6px;
+        border: 1px solid #e5e7eb;
+        background: #ffffff;
+        transition: all 0.2s;
       }
       
-      .feature h4 {
-        margin-top: 0;
-        color: #667eea;
-        font-size: 16px;
+      .feature:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        border-color: #d1d5db;
+      }
+      
+      .feature h3 {
+        font-size: 15px;
+        font-weight: 600;
+        color: #111827;
+        margin-bottom: 8px;
       }
       
       .feature p {
-        margin: 5px 0 0;
+        margin: 0;
         font-size: 14px;
-        color: #555;
+        color: #6b7280;
+        line-height: 1.6;
       }
       
-      @media (prefers-color-scheme: dark) {
-        .container {
-          background: #2d2d2d;
-          color: #e0e0e0;
+      .install-button {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        color: white;
+        border: none;
+        padding: 16px 32px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 8px;
+        cursor: pointer;
+        width: 100%;
+        transition: all 0.3s;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+      }
+      
+      .install-button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(59, 130, 246, 0.35);
+      }
+      
+      .install-button:active {
+        transform: translateY(0);
+      }
+      
+      .install-note {
+        text-align: center;
+        font-size: 13px;
+        color: #6b7280;
+        margin-top: 12px;
+      }
+      
+      @media (max-width: 768px) {
+        .header h1 {
+          font-size: 28px;
         }
-        h1 {
-          color: #e0e0e0;
+        .header p {
+          font-size: 16px;
         }
-        .description {
-          color: #b0b0b0;
+        .card {
+          padding: 24px;
         }
-        .install-section {
-          background: #1a1a1a;
+        .version-header {
+          flex-direction: column;
+          align-items: flex-start;
         }
-        .feature {
-          background: #1a1a1a;
+        .version-selector {
+          width: 100%;
+        }
+        .features {
+          grid-template-columns: 1fr;
         }
       }
     </style>
@@ -169,103 +312,86 @@
     </script>
   </head>
   <body>
+    <!-- Header -->
+    <div class="header">
+      <h1>RX5808-Div Firmware Configurator</h1>
+      <p>Professional firmware management for your RX5808-Div FPV frequency scanner</p>
+    </div>
+
     <div class="container">
-      <!-- Logo section (add your logo image) -->
-      <div class="logo">
-        <!-- <img src="static/rx5808-div-logo.png" alt="RX5808-Div Logo" /> -->
-        <h1>RX5808-Div Firmware Configurator</h1>
-      </div>
-      
-      <p class="description">
-        Flash the latest firmware to your RX5808-Div FPV frequency scanner directly from your browser. 
-        No software installation required!
-      </p>
-      
-      <!-- Requirements -->
-      <div class="requirements">
-        <h4>⚠️ Requirements</h4>
-        <ul>
-          <li>Chrome, Edge, or Opera browser (Web Serial API support required)</li>
-          <li>USB cable connected to your RX5808-Div device</li>
-          <li>Windows: CH340/CP2102 drivers installed</li>
-        </ul>
-      </div>
-      
-      <!-- Features -->
-      <div class="features">
-        <div class="feature">
-          <h4>🛰️ ELRS Wireless Control</h4>
-          <p>Receive channel commands from your ExpressLRS TX via ESP-NOW</p>
-        </div>
-        <div class="feature">
-          <h4>🔄 VTX Band Swap</h4>
-          <p>Configurable R/L band remapping for non-standard VTX firmware</p>
-        </div>
-        <div class="feature">
-          <h4>📡 48 Channels</h4>
-          <p>Full support for all 6 bands (A, B, E, F, R, L) × 8 channels</p>
+      <!-- System Requirements -->
+      <div class="card">
+        <div class="info-box">
+          <h3>System Requirements</h3>
+          <ul>
+            <li>Chrome, Edge, or Opera browser with Web Serial API support</li>
+            <li>USB connection to RX5808-Div device</li>
+            <li>CH340/CP2102 USB drivers (Windows)</li>
+          </ul>
         </div>
       </div>
       
-      <!-- Latest Release -->
-      <div class="install-section">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-          <h3 style="margin: 0;">📦 <span id="release-title">Loading...</span></h3>
-          <select id="version-selector" style="
-            padding: 8px 12px;
-            border-radius: 6px;
-            border: 1px solid #ddd;
-            background: white;
-            cursor: pointer;
-            font-size: 14px;
-          ">
+      <!-- Key Features -->
+      <div class="card">
+        <h2>Key Features</h2>
+        <div class="features">
+          <div class="feature">
+            <h3>Wireless Control</h3>
+            <p>ExpressLRS integration via ESP-NOW protocol for remote channel selection</p>
+          </div>
+          <div class="feature">
+            <h3>VTX Band Swap</h3>
+            <p>Configurable R/L band remapping for compatibility with various VTX firmware</p>
+          </div>
+          <div class="feature">
+            <h3>Multi-Band Support</h3>
+            <p>Complete coverage of all 6 bands (A, B, E, F, R, L) with 8 channels each</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Firmware Installation -->
+      <div class="card">
+        <div class="version-header">
+          <h2><span id="release-title">Loading...</span></h2>
+          <select id="version-selector" class="version-selector">
             <option value="">Loading versions...</option>
           </select>
         </div>
+        
         <div class="version-info">
-          <span><strong>Released:</strong> <span id="release-date">-</span></span>
+          <span><strong>Release Date:</strong> <span id="release-date">-</span></span>
           <span><strong>Build:</strong> <span id="commit-hash">-</span></span>
         </div>
         
         <esp-web-install-button id="install-button">
-          <button slot="activate" style="
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 12px 32px;
-            font-size: 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            width: 100%;
-            transition: background 0.3s;
-          ">
-            🚀 <span id="install-text">Loading...</span>
+          <button slot="activate" class="install-button">
+            <span id="install-text">Loading...</span>
           </button>
         </esp-web-install-button>
         
-        <p style="text-align: center; font-size: 13px; color: #666; margin-top: 15px;">
-          Click the button above to connect your device and begin flashing
+        <p class="install-note">
+          Connect your device via USB and click the button to begin firmware installation
         </p>
       </div>
       
-      <!-- What's New -->
-      <div class="install-section" id="whats-new-section">
-        <h3>✨ What's New in <span id="whats-new-version">v1.7.0</span></h3>
-        <div id="release-notes" style="margin: 10px 0;">
-          <p style="text-align: center; color: #666;">Loading release notes...</p>
+      <!-- Release Notes -->
+      <div class="card" id="whats-new-section">
+        <h2>Release Notes: <span id="whats-new-version">v1.7.0</span></h2>
+        <div id="release-notes" class="release-notes">
+          <p style="text-align: center; color: #9ca3af;">Loading release information...</p>
         </div>
       </div>
       
       <!-- Footer -->
       <div class="footer">
         <p>
-          <a href="https://github.com/LochnessFPV/RX5808-Div" target="_blank">📖 Documentation</a> • 
-          <a href="https://github.com/LochnessFPV/RX5808-Div/releases" target="_blank">📋 All Releases</a> • 
-          <a href="https://github.com/LochnessFPV/RX5808-Div/issues" target="_blank">🐛 Report Issue</a>
+          <a href="https://github.com/LochnessFPV/RX5808-Div" target="_blank">Documentation</a> • 
+          <a href="https://github.com/LochnessFPV/RX5808-Div/releases" target="_blank">Release History</a> • 
+          <a href="https://github.com/LochnessFPV/RX5808-Div/issues" target="_blank">Support</a>
         </p>
-        <p style="margin-top: 10px; font-size: 12px;">
-          Powered by <a href="https://esphome.github.io/esp-web-tools/" target="_blank">ESP Web Tools</a>
+        <p style="margin-top: 12px;">
+          Powered by ESP Web Tools
         </p>
       </div>
     </div>
