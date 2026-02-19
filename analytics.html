@@ -380,9 +380,9 @@
         return '<p style="color: #64748b; text-align: center; padding: 80px 0;">No daily data yet</p>';
       }
 
-      const width = 100;
-      const height = 80;
-      const padding = 10;
+      const width = 800;
+      const height = 200;
+      const padding = 40;
       const maxValue = Math.max(...entries.map(e => e[1]));
       const step = (width - padding * 2) / Math.max(entries.length - 1, 1);
 
@@ -398,27 +398,25 @@
       // Generate area path
       const areaPath = `${linePath} L ${width - padding},${height - padding} L ${padding},${height - padding} Z`;
 
-      // Format dates for labels (show max 7 labels)
-      const labelIndices = entries.length <= 7 
-        ? entries.map((_, i) => i)
-        : [0, Math.floor(entries.length / 2), entries.length - 1];
-
-      const labels = labelIndices.map(i => {
-        const [date, value] = entries[i];
-        const x = padding + i * step;
+      // Format dates for labels
+      const maxLabels = Math.min(entries.length, 10);
+      const labelStep = Math.ceil(entries.length / maxLabels);
+      const labels = entries.map(([date, value], index) => {
+        if (index % labelStep !== 0 && index !== entries.length - 1) return '';
+        const x = padding + index * step;
         const formattedDate = new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-        return `<text x="${x}" y="${height - 2}" class="chart-label" text-anchor="middle">${formattedDate}</text>`;
+        return `<text x="${x}" y="${height - 10}" class="chart-label" text-anchor="middle">${formattedDate}</text>`;
       }).join('');
 
       // Generate dots
       const dots = entries.map(([date, value], index) => {
         const x = padding + index * step;
         const y = height - padding - ((value / maxValue) * (height - padding * 2));
-        return `<circle cx="${x}" cy="${y}" r="2" class="chart-dot"/>`;
+        return `<circle cx="${x}" cy="${y}" r="3" class="chart-dot"/>`;
       }).join('');
 
       return `
-        <svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="none">
+        <svg viewBox="0 0 ${width} ${height}" style="width: 100%; height: 100%;">
           <defs>
             <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
               <stop offset="0%" style="stop-color:#60a5fa;stop-opacity:0.4" />
@@ -440,24 +438,64 @@
         return '<p style="color: #64748b; text-align: center; grid-column: 1/-1;">No geographic data yet</p>';
       }
 
-      // Country code to flag emoji mapping
-      const flagEmoji = {
-        'US': '🇺🇸', 'GB': '🇬🇧', 'CA': '🇨🇦', 'AU': '🇦🇺', 'DE': '🇩🇪', 
-        'FR': '🇫🇷', 'ES': '🇪🇸', 'IT': '🇮🇹', 'NL': '🇳🇱', 'SE': '🇸🇪',
-        'NO': '🇳🇴', 'DK': '🇩🇰', 'FI': '🇫🇮', 'PL': '🇵🇱', 'BR': '🇧🇷',
-        'MX': '🇲🇽', 'AR': '🇦🇷', 'CL': '🇨🇱', 'JP': '🇯🇵', 'KR': '🇰🇷',
-        'CN': '🇨🇳', 'IN': '🇮🇳', 'SG': '🇸🇬', 'NZ': '🇳🇿', 'ZA': '🇿🇦',
-        'RU': '🇷🇺', 'UA': '🇺🇦', 'TR': '🇹🇷', 'IL': '🇮🇱', 'AE': '🇦🇪',
-        'Unknown': '🌍'
+      // Country code to name and flag mapping
+      const countryData = {
+        'US': { name: 'United States', flag: '🇺🇸' },
+        'GB': { name: 'United Kingdom', flag: '🇬🇧' },
+        'CA': { name: 'Canada', flag: '🇨🇦' },
+        'AU': { name: 'Australia', flag: '🇦🇺' },
+        'DE': { name: 'Germany', flag: '🇩🇪' },
+        'FR': { name: 'France', flag: '🇫🇷' },
+        'ES': { name: 'Spain', flag: '🇪🇸' },
+        'IT': { name: 'Italy', flag: '🇮🇹' },
+        'NL': { name: 'Netherlands', flag: '🇳🇱' },
+        'SE': { name: 'Sweden', flag: '🇸🇪' },
+        'NO': { name: 'Norway', flag: '🇳🇴' },
+        'DK': { name: 'Denmark', flag: '🇩🇰' },
+        'FI': { name: 'Finland', flag: '🇫🇮' },
+        'PL': { name: 'Poland', flag: '🇵🇱' },
+        'BR': { name: 'Brazil', flag: '🇧🇷' },
+        'MX': { name: 'Mexico', flag: '🇲🇽' },
+        'AR': { name: 'Argentina', flag: '🇦🇷' },
+        'CL': { name: 'Chile', flag: '🇨🇱' },
+        'JP': { name: 'Japan', flag: '🇯🇵' },
+        'KR': { name: 'South Korea', flag: '🇰🇷' },
+        'CN': { name: 'China', flag: '🇨🇳' },
+        'IN': { name: 'India', flag: '🇮🇳' },
+        'SG': { name: 'Singapore', flag: '🇸🇬' },
+        'NZ': { name: 'New Zealand', flag: '🇳🇿' },
+        'ZA': { name: 'South Africa', flag: '🇿🇦' },
+        'RU': { name: 'Russia', flag: '🇷🇺' },
+        'UA': { name: 'Ukraine', flag: '🇺🇦' },
+        'TR': { name: 'Turkey', flag: '🇹🇷' },
+        'IL': { name: 'Israel', flag: '🇮🇱' },
+        'AE': { name: 'UAE', flag: '🇦🇪' },
+        'BE': { name: 'Belgium', flag: '🇧🇪' },
+        'AT': { name: 'Austria', flag: '🇦🇹' },
+        'CH': { name: 'Switzerland', flag: '🇨🇭' },
+        'PT': { name: 'Portugal', flag: '🇵🇹' },
+        'GR': { name: 'Greece', flag: '🇬🇷' },
+        'CZ': { name: 'Czech Republic', flag: '🇨🇿' },
+        'IE': { name: 'Ireland', flag: '🇮🇪' },
+        'HU': { name: 'Hungary', flag: '🇭🇺' },
+        'RO': { name: 'Romania', flag: '🇷🇴' },
+        'TH': { name: 'Thailand', flag: '🇹🇭' },
+        'PH': { name: 'Philippines', flag: '🇵🇭' },
+        'MY': { name: 'Malaysia', flag: '🇲🇾' },
+        'ID': { name: 'Indonesia', flag: '🇮🇩' },
+        'VN': { name: 'Vietnam', flag: '🇻🇳' },
+        'HK': { name: 'Hong Kong', flag: '🇭🇰' },
+        'TW': { name: 'Taiwan', flag: '🇹🇼' },
+        'Unknown': { name: 'Unknown', flag: '🌍' }
       };
 
-      return entries.map(([country, count]) => {
-        const flag = flagEmoji[country] || '🌍';
+      return entries.map(([countryCode, count]) => {
+        const country = countryData[countryCode] || { name: countryCode, flag: '🌍' };
         return `
           <div class="country-card">
             <div style="display: flex; align-items: center;">
-              <span class="country-flag">${flag}</span>
-              <span class="country-name">${country}</span>
+              <span class="country-flag">${country.flag}</span>
+              <span class="country-name">${country.name}</span>
             </div>
             <span class="country-count">${count}</span>
           </div>
