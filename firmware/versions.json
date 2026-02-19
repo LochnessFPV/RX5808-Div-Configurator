@@ -1,0 +1,10 @@
+{
+  "versions": [
+    {
+      "version": "v1.7.0",
+      "release_date": "2026-02-19",
+      "description": "ELRS Wireless VRX Backpack Support",
+      "manifest_url": "firmware/v1.7.0/manifest.json"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "version": "v1.7.0",
+  "build_date": "2026-02-19T06:36:46Z",
+  "commit": "da880e7",
+  "release_date": "2026-02-19",
+  "description": "ELRS Wireless VRX Backpack Support",
+  "manifest_url": "firmware/v1.7.0/manifest.json",
+  "changelog_url": "https://github.com/LochnessFPV/RX5808-Div/releases/tag/v1.7.0"
+}
