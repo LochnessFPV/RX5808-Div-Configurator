@@ -6,8 +6,3 @@ compatibility_date = "2024-01-01"
 kv_namespaces = [
   { binding = "ANALYTICS", id = "272abf5bca9c4a78a4df3a5a99d5ac31" }
 ]
-
-# Worker settings
-[env.production]
-workers_dev = false
-route = "https://rx5808-analytics.YOUR_SUBDOMAIN.workers.dev/*"

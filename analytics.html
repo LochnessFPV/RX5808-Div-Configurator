@@ -125,6 +125,82 @@
       text-shadow: 0 1px 2px rgba(0,0,0,0.5);
     }
     
+    .line-chart {
+      height: 250px;
+      position: relative;
+      margin-top: 20px;
+    }
+    
+    .line-chart svg {
+      width: 100%;
+      height: 100%;
+    }
+    
+    .chart-line {
+      fill: none;
+      stroke: #60a5fa;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    
+    .chart-area {
+      fill: url(#gradient);
+      opacity: 0.3;
+    }
+    
+    .chart-grid {
+      stroke: #334155;
+      stroke-width: 1;
+      stroke-dasharray: 2,4;
+    }
+    
+    .chart-label {
+      fill: #94a3b8;
+      font-size: 11px;
+      font-family: inherit;
+    }
+    
+    .chart-dot {
+      fill: #60a5fa;
+      stroke: #1e293b;
+      stroke-width: 2;
+    }
+    
+    .geo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+      margin-top: 20px;
+    }
+    
+    .country-card {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .country-name {
+      font-size: 14px;
+      color: #cbd5e1;
+      font-weight: 500;
+    }
+    
+    .country-count {
+      font-size: 18px;
+      font-weight: 600;
+      color: #60a5fa;
+    }
+    
+    .country-flag {
+      font-size: 24px;
+      margin-right: 8px;
+    }
+    
     .loading {
       text-align: center;
       padding: 60px 20px;
@@ -255,6 +331,20 @@
             ${renderBarChart(data.installSuccess)}
           </div>
         </div>
+
+        <div class="chart-card">
+          <div class="chart-title">Daily Traffic</div>
+          <div class="line-chart">
+            ${renderLineChart(data.dailyStats)}
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-title">Traffic by Country</div>
+          <div class="geo-grid">
+            ${renderCountryCards(data.countries)}
+          </div>
+        </div>
       `;
 
       document.getElementById('content').innerHTML = html;
@@ -278,6 +368,98 @@
               <div class="bar-fill" style="width: ${percentage}%"></div>
               <div class="bar-value">${value}</div>
             </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderLineChart(dailyData) {
+      const entries = Object.entries(dailyData).sort((a, b) => a[0].localeCompare(b[0]));
+      
+      if (entries.length === 0) {
+        return '<p style="color: #64748b; text-align: center; padding: 80px 0;">No daily data yet</p>';
+      }
+
+      const width = 100;
+      const height = 80;
+      const padding = 10;
+      const maxValue = Math.max(...entries.map(e => e[1]));
+      const step = (width - padding * 2) / Math.max(entries.length - 1, 1);
+
+      // Generate SVG path for line
+      const points = entries.map(([date, value], index) => {
+        const x = padding + index * step;
+        const y = height - padding - ((value / maxValue) * (height - padding * 2));
+        return `${x},${y}`;
+      });
+
+      const linePath = `M ${points.join(' L ')}`;
+      
+      // Generate area path
+      const areaPath = `${linePath} L ${width - padding},${height - padding} L ${padding},${height - padding} Z`;
+
+      // Format dates for labels (show max 7 labels)
+      const labelIndices = entries.length <= 7 
+        ? entries.map((_, i) => i)
+        : [0, Math.floor(entries.length / 2), entries.length - 1];
+
+      const labels = labelIndices.map(i => {
+        const [date, value] = entries[i];
+        const x = padding + i * step;
+        const formattedDate = new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        return `<text x="${x}" y="${height - 2}" class="chart-label" text-anchor="middle">${formattedDate}</text>`;
+      }).join('');
+
+      // Generate dots
+      const dots = entries.map(([date, value], index) => {
+        const x = padding + index * step;
+        const y = height - padding - ((value / maxValue) * (height - padding * 2));
+        return `<circle cx="${x}" cy="${y}" r="2" class="chart-dot"/>`;
+      }).join('');
+
+      return `
+        <svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" style="stop-color:#60a5fa;stop-opacity:0.4" />
+              <stop offset="100%" style="stop-color:#60a5fa;stop-opacity:0" />
+            </linearGradient>
+          </defs>
+          <path d="${areaPath}" class="chart-area"/>
+          <path d="${linePath}" class="chart-line"/>
+          ${dots}
+          ${labels}
+        </svg>
+      `;
+    }
+
+    function renderCountryCards(countries) {
+      const entries = Object.entries(countries).sort((a, b) => b[1] - a[1]);
+      
+      if (entries.length === 0) {
+        return '<p style="color: #64748b; text-align: center; grid-column: 1/-1;">No geographic data yet</p>';
+      }
+
+      // Country code to flag emoji mapping
+      const flagEmoji = {
+        'US': '🇺🇸', 'GB': '🇬🇧', 'CA': '🇨🇦', 'AU': '🇦🇺', 'DE': '🇩🇪', 
+        'FR': '🇫🇷', 'ES': '🇪🇸', 'IT': '🇮🇹', 'NL': '🇳🇱', 'SE': '🇸🇪',
+        'NO': '🇳🇴', 'DK': '🇩🇰', 'FI': '🇫🇮', 'PL': '🇵🇱', 'BR': '🇧🇷',
+        'MX': '🇲🇽', 'AR': '🇦🇷', 'CL': '🇨🇱', 'JP': '🇯🇵', 'KR': '🇰🇷',
+        'CN': '🇨🇳', 'IN': '🇮🇳', 'SG': '🇸🇬', 'NZ': '🇳🇿', 'ZA': '🇿🇦',
+        'RU': '🇷🇺', 'UA': '🇺🇦', 'TR': '🇹🇷', 'IL': '🇮🇱', 'AE': '🇦🇪',
+        'Unknown': '🌍'
+      };
+
+      return entries.map(([country, count]) => {
+        const flag = flagEmoji[country] || '🌍';
+        return `
+          <div class="country-card">
+            <div style="display: flex; align-items: center;">
+              <span class="country-flag">${flag}</span>
+              <span class="country-name">${country}</span>
+            </div>
+            <span class="country-count">${count}</span>
           </div>
         `;
       }).join('');

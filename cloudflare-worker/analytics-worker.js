@@ -60,12 +60,16 @@ export default {
           installClicks: {},
           installSuccess: {},
           installFailed: {},
+          dailyStats: {},
+          countries: {},
         };
 
-        // List all counter keys
-        const list = await env.ANALYTICS.list({ prefix: 'counter:' });
+        // List all keys
+        const counterList = await env.ANALYTICS.list({ prefix: 'counter:' });
+        const eventList = await env.ANALYTICS.list({ prefix: 'event:' });
         
-        for (const key of list.keys) {
+        // Process counter keys
+        for (const key of counterList.keys) {
           const value = parseInt(await env.ANALYTICS.get(key.name) || '0');
           const parts = key.name.split(':');
           const eventType = parts[1];
@@ -81,6 +85,26 @@ export default {
             stats.installSuccess[version] = value;
           } else if (eventType === 'install_failed') {
             stats.installFailed[version] = value;
+          }
+        }
+
+        // Process event keys for daily stats and countries
+        for (const key of eventList.keys) {
+          try {
+            const eventData = JSON.parse(await env.ANALYTICS.get(key.name));
+            const date = eventData.timestamp.split('T')[0]; // YYYY-MM-DD
+            const country = eventData.country || 'Unknown';
+
+            // Track daily page views
+            if (eventData.event === 'page_view') {
+              stats.dailyStats[date] = (stats.dailyStats[date] || 0) + 1;
+            }
+
+            // Track countries
+            stats.countries[country] = (stats.countries[country] || 0) + 1;
+          } catch (e) {
+            // Skip malformed events
+            continue;
           }
         }
 
