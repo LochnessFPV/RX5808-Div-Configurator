@@ -528,6 +528,30 @@
     </div>
 
     <script>
+      // Analytics configuration - Replace with your Cloudflare Worker URL
+      const ANALYTICS_ENDPOINT = 'YOUR_WORKER_URL_HERE';
+
+      // Analytics tracking
+      async function trackEvent(eventType, eventData = {}) {
+        if (ANALYTICS_ENDPOINT === 'YOUR_WORKER_URL_HERE') {
+          return; // Analytics not configured yet
+        }
+        
+        try {
+          await fetch(`${ANALYTICS_ENDPOINT}/track`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              event: eventType,
+              ...eventData,
+            }),
+          });
+        } catch (error) {
+          // Silently fail - don't interrupt user experience
+          console.debug('Analytics tracking failed:', error);
+        }
+      }
+
       // Firmware version management
       let currentVersion = null;
       let allVersions = [];
@@ -578,6 +602,9 @@
       async function handleVersionChange(event) {
         const selectedVersion = event.target.value;
         const versionData = allVersions.find(v => v.version === selectedVersion);
+        
+        // Track version selection
+        trackEvent('version_selected', { version: selectedVersion });
         
         if (versionData) {
           // Load manifest for selected version
@@ -688,7 +715,37 @@
       }
 
       // Initialize on page load
-      window.addEventListener('DOMContentLoaded', loadLatestVersion);
+      window.addEventListener('DOMContentLoaded', () => {
+        loadLatestVersion();
+        
+        // Track page view
+        trackEvent('page_view');
+        
+        // Setup ESP Web Tools event listeners for install tracking
+        const installButton = document.getElementById('install-button');
+        
+        installButton.addEventListener('state-changed', (ev) => {
+          const state = ev.detail.state;
+          
+          if (state === 'STATE_INITIALIZING') {
+            // User clicked install button
+            trackEvent('install_click', { version: currentVersion?.version || 'unknown' });
+          } else if (state === 'STATE_FINISHED') {
+            // Installation completed successfully
+            trackEvent('install_success', { version: currentVersion?.version || 'unknown' });
+          }
+        });
+        
+        installButton.addEventListener('error-changed', (ev) => {
+          if (ev.detail.error) {
+            // Installation failed
+            trackEvent('install_failed', { 
+              version: currentVersion?.version || 'unknown',
+              error: ev.detail.error
+            });
+          }
+        });
+      });
     </script>
   </body>
 </html>
