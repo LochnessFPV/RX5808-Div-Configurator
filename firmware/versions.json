@@ -4,15 +4,13 @@
       "version": "v1.7.1",
       "release_date": "2026-02-20",
       "description": "v1.7.1 - Performance & Stability Release",
-      "manifest_url": "firmware/v1.7.1/manifest.json",
-      "changelog_url": "https://github.com/LochnessFPV/RX5808-Div/releases/tag/v1.7.1"
+      "manifest_url": "firmware/v1.7.1/manifest.json"
     },
     {
       "version": "v1.7.0",
       "release_date": "2026-02-19",
       "description": "v1.7.0 - ELRS Wireless VRX Backpack Support",
-      "manifest_url": "firmware/v1.7.0/manifest.json",
-      "changelog_url": "https://github.com/LochnessFPV/RX5808-Div/releases/tag/v1.7.0"
+      "manifest_url": "firmware/v1.7.0/manifest.json"
     }
   ]
 }
