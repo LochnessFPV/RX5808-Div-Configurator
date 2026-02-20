@@ -1,0 +1,125 @@
+name: Update Firmware Versions
+
+on:
+  # Run manually
+  workflow_dispatch:
+  
+  # Run daily at 6 AM UTC to check for new releases
+  schedule:
+    - cron: '0 6 * * *'
+  
+  # Trigger when this workflow file is updated
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/update-firmware.yml'
+
+jobs:
+  update-firmware:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Fetch releases from firmware repo
+        id: fetch_releases
+        run: |
+          # Fetch all releases from the firmware repository
+          RELEASES=$(curl -s "https://api.github.com/repos/LochnessFPV/RX5808-Div/releases")
+          
+          # Check if we got a valid response
+          if [ -z "$RELEASES" ] || [ "$RELEASES" = "[]" ]; then
+            echo "No releases found or API error"
+            exit 0
+          fi
+          
+          # Save releases to file for processing
+          echo "$RELEASES" > releases.json
+          
+          # Get the latest release (first in the array)
+          LATEST_VERSION=$(echo "$RELEASES" | jq -r '.[0].tag_name')
+          LATEST_NAME=$(echo "$RELEASES" | jq -r '.[0].name')
+          LATEST_DATE=$(echo "$RELEASES" | jq -r '.[0].published_at' | cut -d'T' -f1)
+          LATEST_BODY=$(echo "$RELEASES" | jq -r '.[0].body' | head -n 1)
+          
+          echo "latest_version=$LATEST_VERSION" >> $GITHUB_OUTPUT
+          echo "latest_name=$LATEST_NAME" >> $GITHUB_OUTPUT
+          echo "latest_date=$LATEST_DATE" >> $GITHUB_OUTPUT
+          
+          echo "Found latest release: $LATEST_VERSION"
+      
+      - name: Update latest.json
+        run: |
+          LATEST_VERSION="${{ steps.fetch_releases.outputs.latest_version }}"
+          LATEST_NAME="${{ steps.fetch_releases.outputs.latest_name }}"
+          LATEST_DATE="${{ steps.fetch_releases.outputs.latest_date }}"
+          
+          # Create latest.json
+          cat > firmware/latest.json << EOF
+          {
+            "version": "$LATEST_VERSION",
+            "build_date": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "commit": "latest",
+            "release_date": "$LATEST_DATE",
+            "description": "$LATEST_NAME",
+            "manifest_url": "https://github.com/LochnessFPV/RX5808-Div/releases/download/$LATEST_VERSION/manifest.json",
+            "changelog_url": "https://github.com/LochnessFPV/RX5808-Div/releases/tag/$LATEST_VERSION"
+          }
+          EOF
+          
+          echo "Updated latest.json to $LATEST_VERSION"
+      
+      - name: Update versions.json
+        run: |
+          # Read all releases and build versions array
+          VERSIONS_ARRAY=$(jq -r '
+            map({
+              version: .tag_name,
+              release_date: (.published_at | split("T")[0]),
+              description: .name,
+              manifest_url: "https://github.com/LochnessFPV/RX5808-Div/releases/download/\(.tag_name)/manifest.json"
+            })
+          ' releases.json)
+          
+          # Create versions.json with all versions
+          cat > firmware/versions.json << EOF
+          {
+            "versions": $VERSIONS_ARRAY
+          }
+          EOF
+          
+          echo "Updated versions.json with $(echo "$VERSIONS_ARRAY" | jq 'length') versions"
+          
+          # Clean up
+          rm releases.json
+      
+      - name: Check for changes
+        id: check_changes
+        run: |
+          git diff --quiet firmware/ || echo "changes=true" >> $GITHUB_OUTPUT
+      
+      - name: Commit and push changes
+        if: steps.check_changes.outputs.changes == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add firmware/latest.json firmware/versions.json
+          git commit -m "🤖 Auto-update firmware to ${{ steps.fetch_releases.outputs.latest_version }}"
+          git push
+      
+      - name: Summary
+        if: steps.check_changes.outputs.changes == 'true'
+        run: |
+          echo "✅ Successfully updated firmware configuration to ${{ steps.fetch_releases.outputs.latest_version }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Updated files:" >> $GITHUB_STEP_SUMMARY
+          echo "- firmware/latest.json" >> $GITHUB_STEP_SUMMARY
+          echo "- firmware/versions.json" >> $GITHUB_STEP_SUMMARY
+      
+      - name: No changes
+        if: steps.check_changes.outputs.changes != 'true'
+        run: |
+          echo "ℹ️ No firmware updates detected" >> $GITHUB_STEP_SUMMARY
