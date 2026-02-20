@@ -1,18 +1,10 @@
 name: Update Firmware Versions
 
+# DISABLED: This workflow needs to be updated to work with local manifest files
+# or the firmware releases need to include manifest.json as assets
 on:
-  # Run manually
+  # Run manually only
   workflow_dispatch:
-  
-  # Run daily at 6 AM UTC to check for new releases
-  schedule:
-    - cron: '0 6 * * *'
-  
-  # Trigger when this workflow file is updated
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/update-firmware.yml'
 
 jobs:
   update-firmware:
