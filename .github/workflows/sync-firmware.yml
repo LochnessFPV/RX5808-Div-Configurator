@@ -1,0 +1,194 @@
+name: Sync Firmware from Releases
+
+on:
+  # Run manually
+  workflow_dispatch:
+  
+  # Run daily at 6 AM UTC to check for new releases
+  schedule:
+    - cron: '0 6 * * *'
+
+jobs:
+  sync-firmware:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout configurator repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Fetch and sync firmware releases
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          
+          FIRMWARE_REPO="LochnessFPV/RX5808-Div"
+          
+          echo "📥 Fetching releases from ${FIRMWARE_REPO}..."
+          
+          # Fetch all releases
+          RELEASES=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+            "https://api.github.com/repos/${FIRMWARE_REPO}/releases")
+          
+          if [ -z "$RELEASES" ] || [ "$RELEASES" = "[]" ]; then
+            echo "❌ No releases found"
+            exit 0
+          fi
+          
+          echo "$RELEASES" > /tmp/releases.json
+          
+          # Get release count
+          RELEASE_COUNT=$(echo "$RELEASES" | jq '. | length')
+          echo "Found $RELEASE_COUNT releases"
+          
+          # Process each release
+          echo "$RELEASES" | jq -c '.[]' | while read -r release; do
+            TAG=$(echo "$release" | jq -r '.tag_name')
+            NAME=$(echo "$release" | jq -r '.name')
+            PUBLISHED_AT=$(echo "$release" | jq -r '.published_at' | cut -d'T' -f1)
+            
+            echo ""
+            echo "🔄 Processing release: $TAG"
+            
+            # Create firmware directory if it doesn't exist
+            FIRMWARE_DIR="firmware/${TAG}"
+            if [ -d "$FIRMWARE_DIR" ]; then
+              echo "  ✓ Directory exists, skipping: $FIRMWARE_DIR"
+              continue
+            fi
+            
+            echo "  📁 Creating directory: $FIRMWARE_DIR"
+            mkdir -p "$FIRMWARE_DIR"
+            
+            # Get assets from this release
+            ASSETS=$(echo "$release" | jq -c '.assets[]')
+            
+            if [ -z "$ASSETS" ]; then
+              echo "  ⚠️  No assets found in release $TAG"
+              rmdir "$FIRMWARE_DIR"
+              continue
+            fi
+            
+            # Download each asset
+            DOWNLOADED_FILES=0
+            echo "$release" | jq -c '.assets[]' | while read -r asset; do
+              ASSET_NAME=$(echo "$asset" | jq -r '.name')
+              DOWNLOAD_URL=$(echo "$asset" | jq -r '.browser_download_url')
+              
+              # Only download manifest.json and .bin files
+              if [[ "$ASSET_NAME" == "manifest.json" ]] || [[ "$ASSET_NAME" == *.bin ]]; then
+                echo "  ⬇️  Downloading: $ASSET_NAME"
+                curl -L -H "Authorization: token $GITHUB_TOKEN" \
+                  -o "${FIRMWARE_DIR}/${ASSET_NAME}" \
+                  "$DOWNLOAD_URL"
+                DOWNLOADED_FILES=$((DOWNLOADED_FILES + 1))
+              fi
+            done
+            
+            # Check if manifest.json was downloaded
+            if [ ! -f "${FIRMWARE_DIR}/manifest.json" ]; then
+              echo "  ❌ No manifest.json found in release $TAG, removing directory"
+              rm -rf "$FIRMWARE_DIR"
+              continue
+            fi
+            
+            echo "  ✅ Successfully synced $TAG"
+          done
+          
+          # Now update latest.json and versions.json
+          echo ""
+          echo "📝 Updating configuration files..."
+          
+          # Get the latest release (first in array)
+          LATEST_TAG=$(echo "$RELEASES" | jq -r '.[0].tag_name')
+          LATEST_NAME=$(echo "$RELEASES" | jq -r '.[0].name')
+          LATEST_DATE=$(echo "$RELEASES" | jq -r '.[0].published_at' | cut -d'T' -f1)
+          
+          if [ -f "firmware/${LATEST_TAG}/manifest.json" ]; then
+            # Extract data from manifest
+            MANIFEST="firmware/${LATEST_TAG}/manifest.json"
+            BUILD_DATE=$(jq -r '.build_date // "'"$(date -u +%Y-%m-%dT%H:%M:%SZ)"'"' "$MANIFEST")
+            COMMIT=$(jq -r '.commit // "latest"' "$MANIFEST")
+            CHANGELOG_URL=$(jq -r '.changelog_url // "https://github.com/'"${FIRMWARE_REPO}"'/releases/tag/'"${LATEST_TAG}"'"' "$MANIFEST")
+            
+            # Update latest.json
+            cat > firmware/latest.json << EOF
+          {
+            "version": "${LATEST_TAG}",
+            "build_date": "${BUILD_DATE}",
+            "commit": "${COMMIT}",
+            "release_date": "${LATEST_DATE}",
+            "description": "${LATEST_NAME}",
+            "manifest_url": "firmware/${LATEST_TAG}/manifest.json",
+            "changelog_url": "${CHANGELOG_URL}"
+          }
+          EOF
+            
+            echo "✅ Updated latest.json to ${LATEST_TAG}"
+          fi
+          
+          # Build versions.json from all downloaded releases
+          VERSIONS_ARRAY="[]"
+          for dir in firmware/v*/; do
+            if [ -d "$dir" ]; then
+              VERSION=$(basename "$dir")
+              if [ -f "${dir}manifest.json" ]; then
+                # Get release info for this version
+                RELEASE_INFO=$(echo "$RELEASES" | jq -r --arg tag "$VERSION" '.[] | select(.tag_name == $tag)')
+                if [ -n "$RELEASE_INFO" ]; then
+                  RELEASE_NAME=$(echo "$RELEASE_INFO" | jq -r '.name')
+                  RELEASE_DATE=$(echo "$RELEASE_INFO" | jq -r '.published_at' | cut -d'T' -f1)
+                  
+                  VERSION_ENTRY=$(jq -n \
+                    --arg version "$VERSION" \
+                    --arg date "$RELEASE_DATE" \
+                    --arg desc "$RELEASE_NAME" \
+                    --arg manifest "firmware/${VERSION}/manifest.json" \
+                    '{version: $version, release_date: $date, description: $desc, manifest_url: $manifest}')
+                  
+                  VERSIONS_ARRAY=$(echo "$VERSIONS_ARRAY" | jq --argjson entry "$VERSION_ENTRY" '. + [$entry]')
+                fi
+              fi
+            fi
+          done
+          
+          # Sort versions by release date (newest first) and build final JSON
+          SORTED_VERSIONS=$(echo "$VERSIONS_ARRAY" | jq 'sort_by(.release_date) | reverse')
+          echo "{\"versions\": $SORTED_VERSIONS}" > firmware/versions.json
+          
+          echo "✅ Updated versions.json with $(echo "$SORTED_VERSIONS" | jq 'length') versions"
+      
+      - name: Check for changes
+        id: check_changes
+        run: |
+          git diff --quiet firmware/ || echo "has_changes=true" >> $GITHUB_OUTPUT
+      
+      - name: Commit and push changes
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add firmware/
+          git commit -m "🤖 Auto-sync firmware releases from LochnessFPV/RX5808-Div"
+          git push
+      
+      - name: Job Summary
+        run: |
+          if [ "${{ steps.check_changes.outputs.has_changes }}" = "true" ]; then
+            echo "## ✅ Firmware Synchronized" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Updated firmware files from LochnessFPV/RX5808-Div releases" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### Files Updated" >> $GITHUB_STEP_SUMMARY
+            echo "- firmware/latest.json" >> $GITHUB_STEP_SUMMARY
+            echo "- firmware/versions.json" >> $GITHUB_STEP_SUMMARY
+            echo "- firmware/v*/ (release directories)" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "## ℹ️ No Changes" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "All firmware releases are already synchronized" >> $GITHUB_STEP_SUMMARY
+          fi
