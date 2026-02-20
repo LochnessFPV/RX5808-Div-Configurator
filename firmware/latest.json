@@ -1,9 +1,9 @@
 {
   "version": "v1.7.1",
-  "build_date": "2026-02-20T06:05:26Z",
-  "commit": "latest",
+  "build_date": "2026-02-20T05:23:00Z",
+  "commit": "7e765fb",
   "release_date": "2026-02-20",
   "description": "v1.7.1 - Performance & Stability Release",
-  "manifest_url": "https://github.com/LochnessFPV/RX5808-Div/releases/download/v1.7.1/manifest.json",
+  "manifest_url": "firmware/v1.7.1/manifest.json",
   "changelog_url": "https://github.com/LochnessFPV/RX5808-Div/releases/tag/v1.7.1"
 }
