@@ -709,25 +709,54 @@
         try {
           // Extract repo info from changelog URL
           const repoMatch = data.changelog_url?.match(/github\.com\/([^\/]+)\/([^\/]+)/);
-          if (!repoMatch) throw new Error('Invalid changelog URL');
+          if (!repoMatch) {
+            console.warn('Invalid changelog URL:', data.changelog_url);
+            throw new Error('Invalid changelog URL');
+          }
           
           const [, owner, repo] = repoMatch;
           const version = data.version;
           
-          // Fetch release info from GitHub API
-          const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/releases/tags/${version}`);
+          console.log(`Fetching release notes for ${owner}/${repo} ${version}...`);
           
-          if (!response.ok) throw new Error('Release not found');
+          // Fetch release info from GitHub API
+          const apiUrl = `https://api.github.com/repos/${owner}/${repo}/releases/tags/${version}`;
+          const response = await fetch(apiUrl);
+          
+          if (!response.ok) {
+            console.warn(`GitHub API returned ${response.status} for ${apiUrl}`);
+            
+            // Check if it's a rate limit issue
+            if (response.status === 403) {
+              const rateLimitRemaining = response.headers.get('X-RateLimit-Remaining');
+              if (rateLimitRemaining === '0') {
+                console.error('GitHub API rate limit exceeded');
+                notesContainer.innerHTML = `<p>⚠️ GitHub API rate limit reached. Showing basic info:</p><p>${data.description || 'No description available.'}</p><p><a href="${data.changelog_url}" target="_blank">View full release notes on GitHub →</a></p>`;
+                return;
+              }
+            }
+            
+            throw new Error(`Release not found (${response.status})`);
+          }
           
           const release = await response.json();
+          console.log('Release data:', release);
+          
           const body = release.body || data.description || 'No release notes available.';
+          
+          // If body is same as description, try to fetch from the changelog URL
+          if (body === data.description && body.length < 100) {
+            console.warn('Release body is empty or too short, showing description with link');
+            notesContainer.innerHTML = `<p>${data.description}</p><p><a href="${data.changelog_url}" target="_blank">View full release notes on GitHub →</a></p>`;
+            return;
+          }
           
           // Convert markdown to basic HTML
           const htmlNotes = convertMarkdownToHTML(body);
           notesContainer.innerHTML = htmlNotes;
         } catch (error) {
           console.error('Failed to load release notes:', error);
-          notesContainer.innerHTML = `<p>${data.description || 'Release notes unavailable.'}</p>`;
+          notesContainer.innerHTML = `<p>${data.description || 'Release notes unavailable.'}</p><p><a href="${data.changelog_url}" target="_blank">View release notes on GitHub →</a></p>`;
         }
       }
 
