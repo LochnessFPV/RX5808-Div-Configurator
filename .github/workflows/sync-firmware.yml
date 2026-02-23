@@ -57,7 +57,17 @@ jobs:
             # Create firmware directory if it doesn't exist
             FIRMWARE_DIR="firmware/${TAG}"
             if [ -d "$FIRMWARE_DIR" ]; then
-              echo "  ✓ Directory exists, skipping: $FIRMWARE_DIR"
+              echo "  ✓ Directory exists, patching manifest URLs..."
+              # Always re-patch changelog_url and documentation_url in existing manifests
+              if [ -f "${FIRMWARE_DIR}/manifest.json" ]; then
+                CORRECT_CHANGELOG="https://github.com/${FIRMWARE_REPO}/releases/tag/${TAG}"
+                CORRECT_DOCS="https://github.com/${FIRMWARE_REPO}#readme"
+                jq --arg cl "$CORRECT_CHANGELOG" --arg doc "$CORRECT_DOCS" \
+                  '.changelog_url = $cl | .documentation_url = $doc' \
+                  "${FIRMWARE_DIR}/manifest.json" > /tmp/manifest_patched.json
+                mv /tmp/manifest_patched.json "${FIRMWARE_DIR}/manifest.json"
+                echo "  🔗 Re-patched URLs in ${FIRMWARE_DIR}/manifest.json"
+              fi
               continue
             fi
             
