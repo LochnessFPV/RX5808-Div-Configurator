@@ -1,5 +1,11 @@
 {"versions": [
   {
+    "version": "v1.8.0",
+    "release_date": "2026-02-23",
+    "description": "v1.8.0 - UX Overhaul & Performance",
+    "manifest_url": "firmware/v1.8.0/manifest.json"
+  },
+  {
     "version": "v1.7.1",
     "release_date": "2026-02-20",
     "description": "v1.7.1 - Performance & Stability Release",

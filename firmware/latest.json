@@ -1,9 +1,9 @@
 {
-  "version": "v1.7.1",
-  "build_date": "2026-02-20T05:23:00Z",
-  "commit": "7e765fb",
-  "release_date": "2026-02-20",
-  "description": "v1.7.1 - Performance & Stability Release",
-  "manifest_url": "firmware/v1.7.1/manifest.json",
-  "changelog_url": "https://github.com/LochnessFPV/RX5808-Div/blob/main/CHANGELOG.md#v171---2026-02-20"
+  "version": "v1.8.0",
+  "build_date": "2026-02-23T00:00:00Z",
+  "commit": "f497edc",
+  "release_date": "2026-02-23",
+  "description": "v1.8.0 - UX Overhaul & Performance",
+  "manifest_url": "firmware/v1.8.0/manifest.json",
+  "changelog_url": "https://github.com/Ft-Available/RX5808-Div/blob/main/Firmware/ESP32/CHANGELOG.md"
 }
