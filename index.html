@@ -510,6 +510,10 @@
           background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%);
           color: #bfdbfe;
         }
+        
+        .card p {
+          color: #94a3b8;
+        }
       }
       
       /* Product Image Section */
@@ -1010,25 +1014,42 @@
         }
       }
 
-      // Load and display install count
+      // Load and display visitor count
       async function loadInstallCount() {
         const countElement = document.getElementById('install-count');
         
         if (ANALYTICS_ENDPOINT === 'YOUR_WORKER_URL_HERE') {
           countElement.textContent = '1,000'; // Placeholder when analytics not configured
+          console.log('Analytics endpoint not configured - using placeholder');
           return;
         }
         
         try {
+          console.log('Fetching analytics from:', ANALYTICS_ENDPOINT + '/stats');
           const response = await fetch(`${ANALYTICS_ENDPOINT}/stats`);
+          
+          if (!response.ok) {
+            console.error('Analytics endpoint returned:', response.status, response.statusText);
+            countElement.textContent = '500+';
+            return;
+          }
+          
           const data = await response.json();
-          const count = data.install_count || data.total_installs || 0;
+          console.log('Analytics data received:', data);
+          
+          // Use page views or unique visitors (whichever is higher for better social proof)
+          const count = Math.max(
+            data.pageViews || 0,
+            data.uniqueVisitors || 0,
+            data.install_count || 0
+          );
           
           // Format number with commas
-          countElement.textContent = count.toLocaleString();
+          countElement.textContent = count > 0 ? count.toLocaleString() : '500+';
+          console.log('Displaying count:', count);
         } catch (error) {
-          console.debug('Failed to load install count:', error);
-          countElement.textContent = '1,000+'; // Fallback display
+          console.error('Failed to load analytics:', error);
+          countElement.textContent = '500+'; // Fallback display
         }
       }
 
