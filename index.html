@@ -609,6 +609,17 @@
         font-size: 16px;
       }
       
+      /* Dark mode overrides for elements defined after the main dark mode block */
+      @media (prefers-color-scheme: dark) {
+        .step-content h4 {
+          color: #f1f5f9 !important;
+        }
+        
+        .faq-question {
+          color: #f1f5f9 !important;
+        }
+      }
+      
       .faq-answer {
         color: #6b7280;
         line-height: 1.7;
