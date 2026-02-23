@@ -511,6 +511,14 @@
           color: #bfdbfe;
         }
         
+        .product-image-item h3 {
+          color: #f1f5f9;
+        }
+        
+        .product-image-section {
+          background: linear-gradient(to bottom, #1e293b 0%, #0f172a 100%);
+        }
+        
         .card p {
           color: #94a3b8;
         }
@@ -524,11 +532,35 @@
         border-radius: 8px;
       }
       
+      .product-images-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 24px;
+        margin-top: 16px;
+      }
+      
+      .product-image-item {
+        text-align: center;
+      }
+      
+      .product-image-item h3 {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 12px;
+        color: #374151;
+      }
+      
       .product-image-section img {
         max-width: 100%;
         height: auto;
         border-radius: 8px;
         box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      
+      .product-image-section img:hover {
+        transform: scale(1.02);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.15);
       }
       
       .product-image-placeholder {
@@ -749,12 +781,19 @@
         </div>
       </div>
       
-      <!-- Product Image -->
+      <!-- Product Images -->
       <div class="card">
+        <h2>Hardware</h2>
         <div class="product-image-section">
-          <div class="product-image-placeholder">
-            📷 Product Image Placeholder<br>
-            <small style="opacity: 0.7;">RX5808 Diversity Receiver</small>
+          <div class="product-images-grid">
+            <div class="product-image-item">
+              <h3>ESP32 Controller Board</h3>
+              <img src="static/screenshots/ESP_Top.png" alt="ESP32 Top View" loading="lazy">
+            </div>
+            <div class="product-image-item">
+              <h3>RX5808 Diversity Receiver</h3>
+              <img src="static/screenshots/RX5808_Top.png" alt="RX5808 Top View" loading="lazy">
+            </div>
           </div>
         </div>
       </div>
