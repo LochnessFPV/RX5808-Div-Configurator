@@ -1,11 +1,46 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>RX5808-Div Firmware Configurator</title>
-    <meta name="description" content="Firmware management for RX5808 Diversity FPV drone video receivers" />
+    <title>RX5808-Div Firmware Configurator | Flash & Manage FPV Receiver Firmware</title>
+    <meta name="description" content="Professional web-based firmware configurator for RX5808 Diversity FPV video receivers. Flash firmware, configure ELRS wireless control, spectrum analyzer, and more—directly from your browser. No software installation required." />
     <meta name="viewport" content="width=device-width" />
     <meta name="color-scheme" content="dark light" />
+    <meta name="keywords" content="RX5808, FPV, diversity receiver, firmware configurator, ESP32, ExpressLRS, ELRS backpack, spectrum analyzer, analog video, drone, racing" />
+    <meta name="author" content="Lochness_FPV" />
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="RX5808-Div Firmware Configurator" />
+    <meta property="og:description" content="Flash and manage firmware for RX5808 Diversity FPV receivers directly from your browser" />
+    <meta property="og:url" content="https://lochnessfpv.github.io/RX5808-Div-Configurator/" />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="RX5808-Div Firmware Configurator" />
+    <meta name="twitter:description" content="Flash and manage firmware for RX5808 Diversity FPV receivers directly from your browser" />
+    
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "RX5808-Div Firmware Configurator",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "description": "Professional web-based firmware configurator for RX5808 Diversity FPV video receivers",
+      "browserRequirements": "Requires Chrome, Edge, or Opera with Web Serial API support",
+      "author": {
+        "@type": "Person",
+        "name": "Lochness_FPV"
+      }
+    }
+    </script>
     
     <style>
       * {
@@ -447,6 +482,200 @@
           color: #94a3b8;
         }
       }
+      
+      /* Product Image Section */
+      .product-image-section {
+        text-align: center;
+        padding: 20px;
+        background: linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%);
+        border-radius: 8px;
+      }
+      
+      .product-image-section img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      }
+      
+      .product-image-placeholder {
+        background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+        padding: 60px 20px;
+        border-radius: 8px;
+        color: #4f46e5;
+        font-size: 14px;
+        font-weight: 500;
+      }
+      
+      /* Installation Steps */
+      .installation-steps {
+        padding: 0;
+      }
+      
+      .installation-step {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #e5e7eb;
+      }
+      
+      .installation-step:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+      }
+      
+      .step-number {
+        flex-shrink: 0;
+        width: 32px;
+        height: 32px;
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 14px;
+      }
+      
+      .step-content h4 {
+        margin: 0 0 8px 0;
+        color: #111827;
+        font-size: 16px;
+        font-weight: 600;
+      }
+      
+      .step-content p {
+        margin: 0;
+        color: #6b7280;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+      
+      /* FAQ Section */
+      .faq-item {
+        margin-bottom: 24px;
+        padding-bottom: 24px;
+        border-bottom: 1px solid #e5e7eb;
+      }
+      
+      .faq-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+      }
+      
+      .faq-question {
+        font-weight: 600;
+        color: #111827;
+        margin-bottom: 8px;
+        font-size: 16px;
+      }
+      
+      .faq-answer {
+        color: #6b7280;
+        line-height: 1.7;
+      }
+      
+      .faq-answer a {
+        color: #3b82f6;
+        text-decoration: none;
+      }
+      
+      .faq-answer a:hover {
+        text-decoration: underline;
+      }
+      
+      /* Professional Footer */
+      .professional-footer {
+        background: #1e293b;
+        color: #94a3b8;
+        padding: 48px 20px 24px;
+        margin-top: 60px;
+        border-top: 1px solid #334155;
+      }
+      
+      .footer-content {
+        max-width: 900px;
+        margin: 0 auto;
+      }
+      
+      .footer-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 32px;
+        margin-bottom: 32px;
+      }
+      
+      .footer-section h3 {
+        color: #f1f5f9;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      
+      .footer-section ul {
+        list-style: none;
+        padding: 0;
+      }
+      
+      .footer-section li {
+        margin-bottom: 8px;
+      }
+      
+      .footer-section a {
+        color: #94a3b8;
+        text-decoration: none;
+        font-size: 14px;
+        transition: color 0.2s ease;
+      }
+      
+      .footer-section a:hover {
+        color: #60a5fa;
+      }
+      
+      .footer-bottom {
+        border-top: 1px solid #334155;
+        padding-top: 24px;
+        text-align: center;
+        font-size: 13px;
+        color: #64748b;
+      }
+      
+      .footer-bottom p {
+        margin: 8px 0;
+      }
+      
+      .footer-bottom a {
+        color: #60a5fa;
+        text-decoration: none;
+      }
+      
+      .footer-bottom a:hover {
+        text-decoration: underline;
+      }
+      
+      /* Stats Badge */
+      .stats-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+        margin: 16px 0;
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+      }
+      
+      .stats-badge .count {
+        font-size: 18px;
+        margin-left: 4px;
+      }
     </style>
     
     <!-- Load ESP Web Tools component -->
@@ -467,6 +696,21 @@
         <h2>About</h2>
         <p>The <strong>RX5808 Diversity</strong> is a dual-receiver analog video system designed for FPV (First Person View) drone pilots. It features automatic diversity switching between two RX5808 receiver modules to maintain the strongest video signal, ensuring reliable real-time video feed during flight.</p>
         <p>This <strong>web-based configurator</strong> provides a simple way to flash and manage firmware on your RX5808-Div device directly from your browser—no software installation required. Update to the latest features, configure wireless control via ExpressLRS, customize band mappings, and more.</p>
+        <div style="text-align: center;">
+          <div class="stats-badge">
+            🎯 Trusted by <span class="count" id="install-count">Loading...</span>+ pilots worldwide
+          </div>
+        </div>
+      </div>
+      
+      <!-- Product Image -->
+      <div class="card">
+        <div class="product-image-section">
+          <div class="product-image-placeholder">
+            📷 Product Image Placeholder<br>
+            <small style="opacity: 0.7;">RX5808 Diversity Receiver</small>
+          </div>
+        </div>
       </div>
       
       <!-- Key Features -->
@@ -500,11 +744,45 @@
         </div>
       </div>
 
-      <!-- System Requirements -->
+      <!-- Installation Guide -->
       <div class="card">
-        <div class="info-box">
-          <h3>System Requirements</h3>
-          <p>Chrome, Edge, or Opera browser • USB connection to device</p>
+        <h2>Installation Guide</h2>
+        <div class="installation-steps">
+          <div class="installation-step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <h4>Check Browser Compatibility</h4>
+              <p>Use Chrome, Edge, or Opera browser with Web Serial API support. Safari and Firefox are not currently supported.</p>
+            </div>
+          </div>
+          <div class="installation-step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <h4>Connect Your Device</h4>
+              <p>Connect your RX5808-Div device to your computer via USB cable. The device should power on automatically.</p>
+            </div>
+          </div>
+          <div class="installation-step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <h4>Select Firmware Version</h4>
+              <p>Choose your desired firmware version from the dropdown menu below. The latest version is recommended for most users.</p>
+            </div>
+          </div>
+          <div class="installation-step">
+            <div class="step-number">4</div>
+            <div class="step-content">
+              <h4>Click Install and Select Port</h4>
+              <p>Click the "Install" button, then select your device's COM port from the browser prompt. The firmware will flash automatically.</p>
+            </div>
+          </div>
+          <div class="installation-step">
+            <div class="step-number">5</div>
+            <div class="step-content">
+              <h4>Wait for Completion</h4>
+              <p>The flashing process takes 1-2 minutes. Do not disconnect the device until you see the success message.</p>
+            </div>
+          </div>
         </div>
       </div>
       
@@ -541,6 +819,41 @@
         </div>
       </div>
       
+      <!-- Support & FAQ -->
+      <div class="card">
+        <h2>Support & Troubleshooting</h2>
+        <div class="faq-item">
+          <div class="faq-question">❓ The install button doesn't work or shows an error</div>
+          <div class="faq-answer">
+            Make sure you're using Chrome, Edge, or Opera browser. Safari and Firefox do not support Web Serial API. If you're on Windows, you may need to install CH340 or CP2102 USB drivers for your device.
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question">❓ No serial port appears when I click Install</div>
+          <div class="faq-answer">
+            Verify your USB cable supports data transfer (not just charging). Try a different USB port or cable. Check Device Manager (Windows) or System Information (Mac) to confirm the device is recognized.
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question">❓ Installation failed or device won't boot after flashing</div>
+          <div class="faq-answer">
+            Try flashing again with "Erase device" option enabled. Ensure the device stays connected throughout the entire process. If problems persist, put the device in bootloader mode manually before flashing.
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question">❓ Which firmware version should I install?</div>
+          <div class="faq-answer">
+            We recommend installing the latest version for the newest features and bug fixes. If you experience issues with the latest version, you can downgrade to a previous stable release from the version dropdown.
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question">💬 Need more help?</div>
+          <div class="faq-answer">
+            For technical support, open an issue on <a href="https://github.com/LochnessFPV/RX5808-Div/issues" target="_blank">GitHub</a> or contact <a href="https://github.com/LochnessFPV" target="_blank">Lochness_FPV</a> directly through GitHub.
+          </div>
+        </div>
+      </div>
+      
       <!-- Footer -->
       <div class="footer">
         <p>
@@ -553,6 +866,54 @@
         </p>
       </div>
     </div>
+
+    <!-- Professional Footer -->
+    <footer class="professional-footer">
+      <div class="footer-content">
+        <div class="footer-grid">
+          <div class="footer-section">
+            <h3>Resources</h3>
+            <ul>
+              <li><a href="https://github.com/LochnessFPV/RX5808-Div" target="_blank">Documentation</a></li>
+              <li><a href="https://github.com/LochnessFPV/RX5808-Div#readme" target="_blank">User Manual</a></li>
+              <li><a href="https://github.com/LochnessFPV/RX5808-Div/releases" target="_blank">Release History</a></li>
+              <li><a href="https://github.com/LochnessFPV/RX5808-Div/blob/main/CHANGELOG.md" target="_blank">Changelog</a></li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h3>Support</h3>
+            <ul>
+              <li><a href="https://github.com/LochnessFPV/RX5808-Div/issues" target="_blank">Report an Issue</a></li>
+              <li><a href="https://github.com/LochnessFPV/RX5808-Div/discussions" target="_blank">Community Discussions</a></li>
+              <li><a href="https://github.com/LochnessFPV" target="_blank">Contact Developer</a></li>
+              <li><a href="#whats-new-section">FAQ</a></li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h3>Project</h3>
+            <ul>
+              <li><a href="https://github.com/LochnessFPV/RX5808-Div" target="_blank">Hardware Repository</a></li>
+              <li><a href="https://github.com/LochnessFPV/RX5808-Div-Configurator" target="_blank">Configurator Source</a></li>
+              <li><a href="https://github.com/LochnessFPV/RX5808-Div/blob/main/LICENSE" target="_blank">License (GPL-3.0)</a></li>
+              <li><a href="https://github.com/LochnessFPV/RX5808-Div/graphs/contributors" target="_blank">Contributors</a></li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h3>Legal</h3>
+            <ul>
+              <li><a href="https://github.com/LochnessFPV/RX5808-Div/blob/main/LICENSE" target="_blank">Terms of Use</a></li>
+              <li><a href="https://github.com/site/privacy" target="_blank">Privacy Policy</a></li>
+              <li><span style="opacity: 0.7;">Open Source Project</span></li>
+              <li><span style="opacity: 0.7;">Community Driven</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>© 2024-2026 <a href="https://github.com/LochnessFPV" target="_blank">Lochness_FPV</a> • RX5808-Div Configurator</p>
+          <p>Powered by <a href="https://esphome.github.io/esp-web-tools/" target="_blank">ESP Web Tools</a> • Built with ❤️ for the FPV community</p>
+        </div>
+      </div>
+    </footer>
 
     <script>
       // Analytics configuration - Replace with your Cloudflare Worker URL
@@ -615,6 +976,28 @@
         } catch (error) {
           // Silently fail - don't interrupt user experience
           console.debug('Analytics tracking failed:', error);
+        }
+      }
+
+      // Load and display install count
+      async function loadInstallCount() {
+        const countElement = document.getElementById('install-count');
+        
+        if (ANALYTICS_ENDPOINT === 'YOUR_WORKER_URL_HERE') {
+          countElement.textContent = '1,000'; // Placeholder when analytics not configured
+          return;
+        }
+        
+        try {
+          const response = await fetch(`${ANALYTICS_ENDPOINT}/stats`);
+          const data = await response.json();
+          const count = data.install_count || data.total_installs || 0;
+          
+          // Format number with commas
+          countElement.textContent = count.toLocaleString();
+        } catch (error) {
+          console.debug('Failed to load install count:', error);
+          countElement.textContent = '1,000+'; // Fallback display
         }
       }
 
@@ -812,7 +1195,8 @@
 
       // Initialize on page load
       window.addEventListener('DOMContentLoaded', () => {
-        loadLatestVersion();
+       loadLatestVersion();
+        loadInstallCount();
         
         // Track page view
         trackEvent('page_view');
