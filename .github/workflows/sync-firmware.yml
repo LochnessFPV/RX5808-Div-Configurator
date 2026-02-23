@@ -96,6 +96,12 @@ jobs:
               continue
             fi
             
+            # Always enforce the correct changelog_url in the manifest (override whatever the upstream had)
+            CORRECT_URL="https://github.com/${FIRMWARE_REPO}/releases/tag/${TAG}"
+            jq --arg url "$CORRECT_URL" '.changelog_url = $url' "${FIRMWARE_DIR}/manifest.json" > /tmp/manifest_patched.json
+            mv /tmp/manifest_patched.json "${FIRMWARE_DIR}/manifest.json"
+            echo "  🔗 Patched changelog_url → ${CORRECT_URL}"
+            
             echo "  ✅ Successfully synced $TAG"
           done
           
@@ -113,7 +119,8 @@ jobs:
             MANIFEST="firmware/${LATEST_TAG}/manifest.json"
             BUILD_DATE=$(jq -r '.build_date // "'"$(date -u +%Y-%m-%dT%H:%M:%SZ)"'"' "$MANIFEST")
             COMMIT=$(jq -r '.commit // "latest"' "$MANIFEST")
-            CHANGELOG_URL=$(jq -r '.changelog_url // "https://github.com/'"${FIRMWARE_REPO}"'/releases/tag/'"${LATEST_TAG}"'"' "$MANIFEST")
+            # Always construct changelog_url from FIRMWARE_REPO — never trust what's in the downloaded manifest
+            CHANGELOG_URL="https://github.com/${FIRMWARE_REPO}/releases/tag/${LATEST_TAG}"
             
             # Update latest.json
             cat > firmware/latest.json << EOF
@@ -162,18 +169,35 @@ jobs:
           
           echo "✅ Updated versions.json with $(echo "$SORTED_VERSIONS" | jq 'length') versions"
       
+      - name: Update README with latest firmware version
+        run: |
+          LATEST_VERSION=$(jq -r '.version' firmware/latest.json)
+          LATEST_DESC=$(jq -r '.description' firmware/latest.json)
+          LATEST_DATE=$(jq -r '.release_date' firmware/latest.json)
+          RELEASE_URL="https://github.com/LochnessFPV/RX5808-Div/releases/tag/${LATEST_VERSION}"
+          
+          # Update the version block between markers in README.md
+          if grep -q "LATEST_FIRMWARE_START" README.md; then
+            NEW_BLOCK="<!-- LATEST_FIRMWARE_START -->\n**Latest:** [${LATEST_VERSION}](${RELEASE_URL}) — ${LATEST_DESC} (${LATEST_DATE})\n<!-- LATEST_FIRMWARE_END -->"
+            perl -i -0pe "s|<!-- LATEST_FIRMWARE_START -->.*?<!-- LATEST_FIRMWARE_END -->|${NEW_BLOCK}|s" README.md
+            echo "✅ README.md updated to ${LATEST_VERSION}"
+          else
+            echo "⚠️  README.md does not contain LATEST_FIRMWARE markers — skipping README update"
+          fi
+
       - name: Check for changes
         id: check_changes
         run: |
-          git diff --quiet firmware/ || echo "has_changes=true" >> $GITHUB_OUTPUT
+          git diff --quiet firmware/ README.md || echo "has_changes=true" >> $GITHUB_OUTPUT
       
       - name: Commit and push changes
         if: steps.check_changes.outputs.has_changes == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add firmware/
+          git add firmware/ README.md
           git commit -m "🤖 Auto-sync firmware releases from LochnessFPV/RX5808-Div"
+          git pull --rebase origin main
           git push
       
       - name: Job Summary

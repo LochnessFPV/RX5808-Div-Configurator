@@ -1,70 +1,24 @@
-# ESP Web Tools
+# RX5808-Div Configurator
 
-Allow flashing ESPHome or other ESP-based firmwares via the browser. Will automatically detect the board type and select a supported firmware. [See website for full documentation.](https://esphome.github.io/esp-web-tools/)
+Web-based firmware installer for the [RX5808-Div](https://github.com/LochnessFPV/RX5808-Div) diversity FPV video receiver. Flash firmware directly from your browser via Web Serial — no drivers or software required.
 
-```html
-<esp-web-install-button
-  manifest="firmware_esphome/manifest.json"
-></esp-web-install-button>
-```
+## Latest Firmware
 
-Example manifest:
+<!-- LATEST_FIRMWARE_START -->
+**Latest:** [v1.8.0](https://github.com/LochnessFPV/RX5808-Div/releases/tag/v1.8.0) — v1.8.0 - UX Overhaul & Performance (2026-02-23)
+<!-- LATEST_FIRMWARE_END -->
 
-```json
-{
-  "name": "ESPHome",
-  "version": "2021.10.3",
-  "home_assistant_domain": "esphome",
-  "funding_url": "https://esphome.io/guides/supporters.html",
-  "builds": [
-    {
-      "chipFamily": "ESP32",
-      "parts": [
-        { "path": "bootloader_dout_40m.bin", "offset": 4096 },
-        { "path": "partitions.bin", "offset": 32768 },
-        { "path": "boot_app0.bin", "offset": 57344 },
-        { "path": "esp32.bin", "offset": 65536 }
-      ]
-    },
-    {
-      "chipFamily": "ESP32-C3",
-      "parts": [
-        { "path": "bootloader_dout_40m.bin", "offset": 0 },
-        { "path": "partitions.bin", "offset": 32768 },
-        { "path": "boot_app0.bin", "offset": 57344 },
-        { "path": "esp32-c3.bin", "offset": 65536 }
-      ]
-    },
-    {
-      "chipFamily": "ESP32-S2",
-      "parts": [
-        { "path": "bootloader_dout_40m.bin", "offset": 4096 },
-        { "path": "partitions.bin", "offset": 32768 },
-        { "path": "boot_app0.bin", "offset": 57344 },
-        { "path": "esp32-s2.bin", "offset": 65536 }
-      ]
-    },
-    {
-      "chipFamily": "ESP32-S3",
-      "parts": [
-        { "path": "bootloader_dout_40m.bin", "offset": 4096 },
-        { "path": "partitions.bin", "offset": 32768 },
-        { "path": "boot_app0.bin", "offset": 57344 },
-        { "path": "esp32-s3.bin", "offset": 65536 }
-      ]
-    },
-    {
-      "chipFamily": "ESP8266",
-      "parts": [
-        { "path": "esp8266.bin", "offset": 0 }
-      ]
-    }
-  ]
-}
-```
+## Usage
+
+Open the configurator at `https://lochnessfpv.github.io/RX5808-Div-Configurator/`, connect your ESP32 via USB, select a firmware version, and click **Install**.
 
 ## Development
 
-Run `script/develop`. This starts a server. Open it on http://localhost:5001.
+Run `script/develop`. This starts a local dev server at http://localhost:5001.
 
-[![ESPHome - A project from the Open Home Foundation](https://www.openhomefoundation.org/badges/esphome.png)](https://www.openhomefoundation.org/)
+## Firmware Sync
+
+The [sync-firmware workflow](.github/workflows/sync-firmware.yml) runs daily and on demand to pull new releases from [LochnessFPV/RX5808-Div](https://github.com/LochnessFPV/RX5808-Div) and update `firmware/` and this README automatically.
+
+Built on [ESP Web Tools](https://esphome.github.io/esp-web-tools/) by ESPHome.
+
